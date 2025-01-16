@@ -127,6 +127,7 @@ def main(ac_type='ac'):
                 loss += clustering_loss(autoencoder.encode(batch))
             elif ac_type == 'ac+spread':
                 loss += spread_loss(autoencoder.encode(batch))
+                loss += clustering_loss(autoencoder.encode(batch))
             loss.backward()
             optimizer.step()
             train_loss += loss.item()
@@ -144,6 +145,7 @@ def main(ac_type='ac'):
                     loss += clustering_loss(autoencoder.encode(batch))
                 elif ac_type == 'ac+spread':
                     loss += spread_loss(autoencoder.encode(batch))
+                    loss += clustering_loss(autoencoder.encode(batch))
                 val_loss += loss.item()
             val_loss /= len(val_data_loader)
 
