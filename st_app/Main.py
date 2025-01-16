@@ -10,10 +10,13 @@ import jax.numpy as jnp
 import torch
 import matplotlib.pyplot as plt
 
-st.title('Technician Knowledge Grids')
-
 from ongoing.knowledge.grid import KnowledgeGrid, Technician
 from utils import *
+
+st.title('Technician Knowledge Grids')
+
+device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+device = 'mps' if torch.backend.mps.is_available() else 'cpu'
 
 # Import the data and embeddings
 data_path = 'data/original.csv'
@@ -73,11 +76,11 @@ ac_dim = 2
 num_dim = ac_dim
 autoencoder = Autoencoder(embeddings.shape[1], ac_dim)
 if model == "AC":
-    autoencoder.load_state_dict(torch.load('models/autoencoder.pth'))
+    autoencoder.load_state_dict(torch.load('models/autoencoder.pth', map_location=device))
 elif model == "AC+Clustering":
-    autoencoder.load_state_dict(torch.load('models/autoencoder_clustering.pth'))
+    autoencoder.load_state_dict(torch.load('models/autoencoder_clustering.pth', map_location=device))
 elif model == "AC+Spread":
-    autoencoder.load_state_dict(torch.load('models/autoencoder_spread.pth'))
+    autoencoder.load_state_dict(torch.load('models/autoencoder_spread.pth', map_location=device))
     
 model_types = {
     "AC": "Autoencoder",
@@ -90,11 +93,11 @@ ac_knowledge_grids = {}
 
 for model_t in model_types.keys():
     if model_t == "AC":
-        autoencoder.load_state_dict(torch.load('models/autoencoder.pth'))
+        autoencoder.load_state_dict(torch.load('models/autoencoder.pth', map_location=device))
     elif model_t == "AC+Clustering":
-        autoencoder.load_state_dict(torch.load('models/autoencoder_clustering.pth'))
+        autoencoder.load_state_dict(torch.load('models/autoencoder_clustering.pth', map_location=device))
     elif model_t == "AC+Spread":
-        autoencoder.load_state_dict(torch.load('models/autoencoder_spread.pth'))
+        autoencoder.load_state_dict(torch.load('models/autoencoder_spread.pth', map_location=device))
 
     # Encode the embeddings
     reduced_embeddings = autoencoder.encode(torch.tensor(embeddings).float()).detach().numpy()
@@ -187,6 +190,11 @@ def _find_best_kmeans(n_clusters_trials, reduced_embeddings):
     # Compute the inertia for each number of clusters
     mean_silhouette_scores = []
     for n_clusters in n_clusters_trials:
+        
+        # Check if the number of clusters is less than the number of embeddings
+        if n_clusters > reduced_embeddings.shape[0]:
+            continue
+        
         kmeans = KMeans(n_clusters=n_clusters)
         kmeans.fit(reduced_embeddings)
         labels = kmeans.labels_
@@ -194,7 +202,7 @@ def _find_best_kmeans(n_clusters_trials, reduced_embeddings):
         mean_silhouette_scores.append(silhouette_score_)
         
     # Choose the best number of clusters
-    best_n_clusters = n_clusters_trials[np.argmin(mean_silhouette_scores)]
+    best_n_clusters = n_clusters_trials[np.argmax(mean_silhouette_scores)]
     
     return best_n_clusters, mean_silhouette_scores
 
@@ -239,7 +247,9 @@ technician_embeddings = reduced_embeddings[filtered_df[USEFUL_COLUMNS[-1] + '_an
 technician_labels = labels[filtered_df[USEFUL_COLUMNS[-1] + '_ano'] == technician_id]
 
 # Perform a kmeans clustering on the reduced embeddings
-n_clusters_trials = [3, 5, 7, 10, 12, 20, 30, 50, 100]
+n_clusters_trials = [3, 5, 7, 10, 12]
+
+# Filter
 
 best_n_clusters, silhouettes = _find_best_kmeans(n_clusters_trials, technician_embeddings)
 
