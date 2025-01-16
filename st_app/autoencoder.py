@@ -92,7 +92,7 @@ def main(ac_type='ac'):
     # Create the autoencoder
     autoencoder = Autoencoder(input_dim, encoding_dim)
 
-    device = 'mps'
+    device = 'cpu'
     batch_size = 64
     epochs = 100
     lr = 0.001
