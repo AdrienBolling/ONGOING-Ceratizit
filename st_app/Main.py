@@ -15,12 +15,16 @@ from utils import *
 
 st.title('Technician Knowledge Grids')
 
-device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-device = 'mps' if torch.backend.mps.is_available() else 'cpu'
+#device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+#device = 'mps' if torch.backend.mps.is_available() else 'cpu'
+device = 'cpu'
 
 # Import the data and embeddings
 data_path = 'data/original.csv'
 embeddings_path = 'data/embeddings_full.npy'
+
+# Precomputation path
+precomputation_path = "saved_computation"
 
 model = st.selectbox("Choose a model", ["AC", "AC+Clustering", "AC+Spread"])
 
@@ -91,6 +95,8 @@ model_types = {
 embed = {}
 ac_knowledge_grids = {}
 
+load_computation = False
+
 for model_t in model_types.keys():
     if model_t == "AC":
         autoencoder.load_state_dict(torch.load('models/autoencoder.pth', map_location=device))
@@ -123,15 +129,31 @@ for model_t in model_types.keys():
 
         return kg
     
-    # Save the embed dictionnary in a temp pickled file
-    tmp_path = f"tmp_embed.pkl"
-    with open(tmp_path, "wb") as f:
-        pickle.dump(embed, f)
-    
-    embed[model_t] = reduced_embeddings
+    if not load_computation:
+        embed[model_t] = reduced_embeddings
 
-    ac_knowledge_grid = [create_knowledge_grid(tech, mod=model_t) for tech in technicians]
-    ac_knowledge_grids[model_t] = ac_knowledge_grid
+        ac_knowledge_grid = [create_knowledge_grid(tech, mod=model_t) for tech in technicians]
+        ac_knowledge_grids[model_t] = ac_knowledge_grid
+    
+if not load_computation:
+    with open(precomputation_path+"/embeddings.pkl", 'wb') as f:
+        pickle.dump(embed, f)
+    with open(precomputation_path+"/knowledge_grids.pkl", 'wb') as f:
+        pickle.dump(ac_knowledge_grids, f)
+    
+
+if load_computation:
+    @st.cache_resource
+    def load_saved_computation(path=precomputation_path):
+        with open(path+"/embeddings.pkl", 'rb') as f:
+            embed = pickle.load(f)
+        with open(path+"/knowledge_grids.pkl", 'rb') as f:
+            ac_knowledge_grids = pickle.load(f)
+            
+        return embed, ac_knowledge_grids
+    
+    embed, ac_knowledge_grids = load_saved_computation()
+            
 
 
 
