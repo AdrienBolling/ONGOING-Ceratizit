@@ -89,7 +89,7 @@ model_types = {
 embed = {}
 ac_knowledge_grids = {}
 
-load_computation = False
+load_computation = True
 
 for model_t in model_types.keys():
     if model_t == "AC":
@@ -123,7 +123,8 @@ for model_t in model_types.keys():
                 kg.add_ticket_knowledge(emb)
 
         return kg
-    
+
+
     if not load_computation:
         embed[model_t] = reduced_embeddings
 
@@ -131,26 +132,23 @@ for model_t in model_types.keys():
         ac_knowledge_grids[model_t] = ac_knowledge_grid
 
 if not load_computation:
-    with open(precomputation_path+"/embeddings.pkl", 'wb') as f:
+    with open(precomputation_path + "/embeddings.pkl", 'wb') as f:
         pickle.dump(embed, f)
-    with open(precomputation_path+"/knowledge_grids.pkl", 'wb') as f:
+    with open(precomputation_path + "/knowledge_grids.pkl", 'wb') as f:
         pickle.dump(ac_knowledge_grids, f)
-
 
 if load_computation:
     @st.cache_resource
     def load_saved_computation(path=precomputation_path):
-        with open(path+"/embeddings.pkl", 'rb') as f:
+        with open(path + "/embeddings.pkl", 'rb') as f:
             embed = pickle.load(f)
-        with open(path+"/knowledge_grids.pkl", 'rb') as f:
+        with open(path + "/knowledge_grids.pkl", 'rb') as f:
             ac_knowledge_grids = pickle.load(f)
 
         return embed, ac_knowledge_grids
 
+
     embed, ac_knowledge_grids = load_saved_computation()
-
-
-
 
 reduced_embeddings = embed[model]
 knowledge_grids = ac_knowledge_grids[model]

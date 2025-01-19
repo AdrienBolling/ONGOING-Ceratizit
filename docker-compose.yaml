@@ -6,3 +6,4 @@ services:
     restart: always
     volumes:
       - ./data:/app/data:ro
+      - ./saved_computation/:/app/saved_computation/:ro
