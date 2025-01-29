@@ -1,4 +1,6 @@
 # ignore all files in the data directory
-
+test.ipynb
 data/
-data.zip
+storage/
+.vscode/
+.venv/
