@@ -3,6 +3,7 @@ import pickle
 import jax.numpy as jnp
 import matplotlib.pyplot as plt
 import torch
+import numpy as np
 from ongoing.knowledge.grid import KnowledgeGrid, Technician
 
 from autoencoder import Autoencoder

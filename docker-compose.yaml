@@ -5,5 +5,4 @@ services:
       - "80:8501"
     restart: always
     volumes:
-      - ./data:/app/data:ro
-      - ./saved_computation/:/app/saved_computation/:ro
+      - ./storage/:/app/storage/:ro

@@ -1,7 +1,5 @@
-import pandas as pd
-import numpy as np
 import streamlit as st
-import utils as ut
+import src.utils.utils as ut
 
 # Load config file
 config = ut.load_config()

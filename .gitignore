@@ -4,3 +4,5 @@ data/
 storage/
 .vscode/
 .venv/
+.idea/
+saved_computation/

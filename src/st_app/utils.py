@@ -1,7 +1,5 @@
-import numpy as np
-import pandas as pd
 import streamlit as st
-import utils as ut
+import src.utils.utils as ut
 
 # Load config file
 config = ut.load_config()
@@ -42,7 +40,7 @@ def load_data(path, columns):
 def load_data_and_embeddings(data_path, embeddings_path, columns):
     # Load data and embeddings
     data = load_data(data_path, columns)
-    embeddings = load_embeddings(embeddings_path)
+    embeddings = ut.load_embeddings(embeddings_path)
 
     return data, embeddings
 
