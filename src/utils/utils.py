@@ -266,8 +266,6 @@ def load_grid(grid_name, hyperparameters_dict, root_path=ROOT_PATH):
     
     model_folder = get_hash_folder(hyperparameters_dict, root_path)
     
-    print(f'Loading grid {grid_name} from {model_folder}')
-    
     # Get the model path
     grid_path = os.path.join(model_folder, CONFIG["grids_subdir"], f"{grid_name}.pkl")
     
@@ -470,6 +468,7 @@ def create_grid(technician, filtered_embeddings, knowledge_grids_args):
         # Convert the embedding to a numpy array of floats
         emb = np.array(embedding, dtype=np.float32)
         kg.add_ticket_knowledge(emb)
+        print(f"Added ticket knowledge to technician {technician.name}")
     return kg
 
 def create_technician(key, name):
@@ -514,6 +513,9 @@ def generate_all_grids(full_nlp_embeddings, original_data, model_key):
     
     # Load the embeddings
     embeddings = load_embeddings(hyperparameters)
+    
+    # Normalize the embeddings
+    embeddings = (embeddings - np.min(embeddings, axis=0)) / (np.max(embeddings, axis=0) - np.min(embeddings, axis=0))
     
     # Define the grid arguments
     knowledge_grids_args = define_grid_kwargs(embeddings)
@@ -610,8 +612,6 @@ def st_load_grid(tech_name, model_key):
         
     # Get the hyperparameters of the model
     hyperparameters = hp_dict[model_key]
-    
-    print(f'Tech: {tech_name}, Model: {model_key}')
     # Load the grid
     grid = load_grid(tech_name, hyperparameters)
     
@@ -751,7 +751,7 @@ def load_labeled_plotly_fig(grid, model_key):
     grid = load_grid(grid._technician.name, hyperparameters)
     
     # Render the grid
-    plotly_fig = grid.render(streamlit=False, dim1=0, dim2=1)
+    plotly_fig = grid.render(streamlit=False, dim1=0, dim2=1, max_knowledge='percentage')
     
     # Add the labels
     plotly_fig = label_plotly_fig(plotly_fig, cluster_labels, label_coordinates)
@@ -776,3 +776,26 @@ def full_compute(model_hp):
         
     # Compute all label files
     compute_all_label_files(hp_hash)
+    
+def update_labels(model, labels_dict):
+    
+    # Open the labeling file for this model
+    with open(CONFIG['hp_file_path'], 'r') as f:
+        hp_dict = json.load(f)
+        
+    hyperparameters = hp_dict[model]
+    
+    model_folder = get_hash_folder(hyperparameters)
+    
+    path = os.path.join(model_folder, CONFIG["labeling_file"])
+    
+    with open(path, "r") as f:
+        labeling = json.load(f)
+        
+    # Update the labels
+    labeling["labels"] = labels_dict
+    
+    # Save the labeling file
+    with open(path, "w") as f:
+        json.dump(labeling, f, indent=4)
+        
