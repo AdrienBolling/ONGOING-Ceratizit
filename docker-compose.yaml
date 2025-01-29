@@ -1,0 +1,9 @@
+services:
+  app:
+    image: ongoing
+    ports:
+      - "80:8501"
+    restart: always
+    volumes:
+      - ./data:/app/data:ro
+      - ./saved_computation/:/app/saved_computation/:ro

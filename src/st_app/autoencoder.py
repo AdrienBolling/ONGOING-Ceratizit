@@ -1,10 +1,11 @@
+import numpy as np
 import torch
 import torch.nn as nn
-from tqdm import tqdm
-import numpy as np
-from sklearn.model_selection import train_test_split
 from sklearn.cluster import KMeans
 from sklearn.metrics import silhouette_score
+from sklearn.model_selection import train_test_split
+from tqdm import tqdm
+
 
 class Autoencoder(nn.Module):
     def __init__(self, input_dim, encoding_dim):
@@ -35,15 +36,17 @@ class Autoencoder(nn.Module):
         encoded = self.encoder(x)
         decoded = self.decoder(encoded)
         return decoded
-    
+
     def encode(self, x):
         return self.encoder(x)
-    
+
     def decode(self, x):
         return self.decoder(x)
-    
-ns_clusters = [5,7,10,12]
-    
+
+
+ns_clusters = [5, 7, 10, 12]
+
+
 def clustering_loss(x):
     x_np = x.detach().cpu().numpy()
     silhouette = -1
@@ -58,25 +61,25 @@ def clustering_loss(x):
         if score > silhouette:
             silhouette = score
             # Loss is the silhouette score
-            loss = 1-score
+            loss = 1 - score
     return loss
+
 
 def spread_loss(x):
     # Compute pairwise distances
     distances = torch.cdist(x, x)
-    
+
     # Flatten the distances
     distances = distances.flatten()
-    
+
     # Compute the variance of the distances
     variance = torch.var(distances)
-    
+
     return variance
 
+
 def main(ac_type='ac'):
-
     # Load the data from the embeddings from a csv file with numpy
-
 
     data = np.load('data/embeddings_full.npy', allow_pickle=True)
 
@@ -89,13 +92,12 @@ def main(ac_type='ac'):
     # Create the autoencoder
     autoencoder = Autoencoder(input_dim, encoding_dim)
 
-    device = 'mps'
+    device = 'cpu'
     batch_size = 64
     epochs = 100
     lr = 0.001
     criterion = nn.MSELoss()
     optimizer = torch.optim.Adam(autoencoder.parameters(), lr=lr)
-
 
     # Split in training in validation set
 
@@ -130,7 +132,7 @@ def main(ac_type='ac'):
             optimizer.step()
             train_loss += loss.item()
         train_loss /= len(train_data_loader)
-        
+
         autoencoder.eval()
         val_loss = 0
         with torch.no_grad():
@@ -147,7 +149,7 @@ def main(ac_type='ac'):
                 val_loss += loss.item()
             val_loss /= len(val_data_loader)
 
-    print(f'Epoch {epoch+1}/{epochs}, Train Loss: {train_loss:.4f}, Val Loss: {val_loss:.4f}')
+    print(f'Epoch {epoch + 1}/{epochs}, Train Loss: {train_loss:.4f}, Val Loss: {val_loss:.4f}')
     print('Final RMSE:', np.sqrt(val_loss))
 
     # Print some comaprisons between the input and the output values
@@ -169,7 +171,6 @@ def main(ac_type='ac'):
 
 
 if __name__ == '__main__':
-
     # ac_type = 'ac'
     # ac_type = 'ac+clustering'
     ac_type = 'ac+spread'
