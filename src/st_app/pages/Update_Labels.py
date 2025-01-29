@@ -26,3 +26,4 @@ if uploaded_file is not None:
     ut.update_labels(model=selected_model, labels_dict=uploaded_file)
     
     st.write(f"The labels for the model {selected_model} have been updated.")
+    st.write(f"New labels : {uploaded_file}")
