@@ -11,17 +11,19 @@ def load_nlp_embeddings(nlp_model):
     nlp_embeddings = ut.load_embeddings(nlp_model)
     return nlp_embeddings
 
-@st.cache_data(ttl=ttl)
+# @st.cache_data(ttl=ttl)
 def load_raw_data():
     # Load raw data encoded in a .csv file
-    return ut.load_raw_data()
+    data = ut.load_raw_data()
+    st.write("Data loaded")
+    return data
 
 @st.cache_data(ttl=ttl)
 def useful_data(raw_data=None, columns_id=config["tickets_relevant_columns"]):
     if raw_data is None:
         raw_data = load_raw_data()
     # Extract useful data from raw data
-    columns = [column for column in columns_id if column in raw_data.columns]
+    columns = raw_data.columns[columns_id]
     useful_data = raw_data[columns]
     return useful_data
 

@@ -308,7 +308,7 @@ def compute_nlp_embeddings(nlp_model, csv_path=CSV_PATH, relevant_columns=CONFIG
     
 def load_raw_data(path=CSV_PATH):
     # Load raw data encoded in a .csv file
-    raw_data = pd.read_csv(path, sep=';', low_memory=False)
+    raw_data = pd.read_csv(path, sep=';')
     return raw_data
     
 def save_nlp_embeddings(embeddings, texts, nlp_model, nlp_embeddings_dir=CONFIG["nlp_embeddings_dir"], root_path=ROOT_PATH, overwrite=OVERWRITE):
