@@ -1,7 +1,7 @@
 import numpy as np
 import torch
 import torch.nn as nn
-from sklearn.cluster import KMeans
+from sklearn.cluster import KMeans, DBSCAN, AgglomerativeClustering
 from sklearn.metrics import silhouette_score
 from sklearn.model_selection import train_test_split
 from tqdm import tqdm
@@ -47,10 +47,26 @@ class Autoencoder(nn.Module):
 ns_clusters = [5, 7, 10, 12]
 
 
-def clustering_loss(x):
+def clustering_loss(x, n_clusters=10):
     x_np = x.detach().cpu().numpy()
     silhouette = -1
     loss = 0
+    if n_clusters > x_np.shape[0]:
+        # perform Agglomerative Clustering
+        clustering = AgglomerativeClustering(n_clusters=n_clusters)
+        clustering.fit(x_np)
+        labels = clustering.labels_
+        score = silhouette_score(x_np, labels)
+        return 1 - score
+    
+    else:
+        n_clusters = x_np.shape[0] // 2 + 1
+        clustering = AgglomerativeClustering(n_clusters=n_clusters)
+        clustering.fit(x_np)
+        labels = clustering.labels_
+        score = silhouette_score(x_np, labels)
+        return 1 - score
+        
     for n_clusters in ns_clusters:
         if n_clusters > x_np.shape[0]:
             continue

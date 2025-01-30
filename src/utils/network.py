@@ -76,15 +76,15 @@ class Autoencoder(nn.Module, TrainableNetwork):
         return self.decoder(x)
     
     def loss(self, x, y):
-        clustering_loss = self.config.get('clustering_loss', False)
-        spread_loss = self.config.get('spread_loss', False)
+        _clustering_loss = self.config.get('clustering_loss', False)
+        _spread_loss = self.config.get('spread_loss', False)
         criterion = nn.MSELoss()
         
         loss = criterion(x, y)
         
-        if clustering_loss:
+        if _clustering_loss:
             loss += clustering_loss(x)
-        if spread_loss:
+        if _spread_loss:
             loss += spread_loss(x)
 
         return loss

@@ -1,5 +1,5 @@
 # Global config file
-cache_ttl: 3600
+ttl: 3600
 storage_root: ./storage
 models_dir: models
 raw_data_dir: raw_data

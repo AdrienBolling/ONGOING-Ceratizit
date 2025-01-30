@@ -5,6 +5,7 @@ from pathlib import Path
 import json
 import logging
 import pickle
+import random
 import pandas as pd
 from sentence_transformers import SentenceTransformer
 import torch
@@ -13,6 +14,9 @@ from src.utils.network import Network
 import numpy as np
 from ongoing.knowledge.grid import KnowledgeGrid, Technician
 from sklearn.cluster import KMeans
+import jax.numpy as jnp
+import streamlit as st
+import plotly.graph_objects as go
 
 logger = logging.getLogger(__name__)
 
@@ -467,8 +471,7 @@ def create_grid(technician, filtered_embeddings, knowledge_grids_args):
         embedding = emb
         # Convert the embedding to a numpy array of floats
         emb = np.array(embedding, dtype=np.float32)
-        kg.add_ticket_knowledge(emb)
-        print(f"Added ticket knowledge to technician {technician.name}")
+        kg.add_ticket_knowledge(emb, random_location=True)
     return kg
 
 def create_technician(key, name):
@@ -529,7 +532,7 @@ def generate_all_grids(full_nlp_embeddings, original_data, model_key):
     # Create the grids
     filtered_embeddings = embeddings[:-1][full_mask]
     
-    grids = [create_grid(tech, filtered_embeddings[filter_by_technician(filtered_data, tech)[1]], knowledge_grids_args) for tech in technicians]
+    grids = [create_grid(tech, filtered_embeddings[filter_by_technician(anonymized_data, tech)[1]], knowledge_grids_args) for tech in technicians]
     
     return grids, technicians, filtered_data, anonymized_data, full_mask, masked_idx
 
@@ -663,11 +666,38 @@ def load_cluster_labels(path=CONFIG["cluster_labels_subfolder"]):
     return cluster_labels
 
 def label_plotly_fig(fig, cluster_labels, label_coordinates):
+    
+    ## To be changed later bcs its a bug
+    
+    # Normalize the coordinates between 0 and 100
+    for key, value in label_coordinates.items():
+        if value[0] > 100:
+            value[0] = 100 - random.randint(2, 50)
+        if value[1] > 100:
+            value[1] = 100 - random.randint(2, 50)
+        if value[0] < 0:
+            value[0] = random.randint(0, 50)
+        if value[1] < 0:
+            value[1] = random.randint(0, 50)
+    
     for cluster in range(len(cluster_labels)):
         label = cluster_labels[str(cluster)]
         coordinates = label_coordinates[str(cluster)]
-        # Add the annotations to the plotly figure
-        fig.add_annotation(x=coordinates[0], y=coordinates[1], text=label, showarrow=False)
+        
+        # Check the z_coord of the points already in the plot at this coordinate
+        # If there is already a point at this coordinate, add a random value to the z_coord
+        # If not, add the point with z_coord = 100
+        # If there is already a point at this coordinate, add a random value to the z_coord
+        
+        # Check if there is already a point at this coordinate
+        z_coord = 1
+        if fig.data:
+            for trace in fig.data:
+                z_coord = trace.z[coordinates[0]][coordinates[1]] + 1
+                break
+        
+        # Do it using a scatter trace, with the text in the hover
+        fig.add_trace(go.Scatter3d(x=[coordinates[0]], y=[coordinates[1]], z=[z_coord], mode="markers", text=label, hoverinfo="text", showlegend=False))
             
     return fig
 
@@ -750,8 +780,14 @@ def load_labeled_plotly_fig(grid, model_key):
     # Load the grid
     grid = load_grid(grid._technician.name, hyperparameters)
     
+    # labels_embed = [grid.coords_to_embedding(label_coordinates[str(i)]) for i in range(len(cluster_labels))]
+    # st.write(grid._num_tickets)
+    # for label_emb in labels_embed:
+    #     for i in range(random.randint(1, 3)):
+    #         grid.add_ticket_knowledge(label_emb)
+    # st.write(grid._num_tickets)
     # Render the grid
-    plotly_fig = grid.render(streamlit=False, dim1=0, dim2=1, max_knowledge='percentage')
+    plotly_fig = render(grid,streamlit=False, dim1=0, dim2=1)
     
     # Add the labels
     plotly_fig = label_plotly_fig(plotly_fig, cluster_labels, label_coordinates)
@@ -799,3 +835,69 @@ def update_labels(model, labels_dict):
     with open(path, "w") as f:
         json.dump(labeling, f, indent=4)
         
+        
+def render(grid, dim1: int, dim2: int, reduction='slice', slice_index=0, streamlit=False):
+    """
+    Render a 3D plot of the grid using two chosen dimensions (dim1, dim2) and reducing the others.
+
+    Args:
+    - dim1 (int): The first dimension to plot on the X axis.
+    - dim2 (int): The second dimension to plot on the Y axis.
+    - reduction (str): How to handle the remaining dimensions ('mean', 'sum', or 'slice').
+    - slice_index (int): If using 'slice' reduction, the index to slice the remaining dimensions at.
+
+    Returns:
+    - Plotly 3D plot figure.
+    """
+
+    # Step 1: Handle the reduction of dimensions other than dim1 and dim2
+    grid = grid._grid  # Assuming grid._grid holds the knowledge grid
+
+    other_dims = [i for i in range(grid.ndim) if i not in (dim1, dim2)]
+
+    # Step 2: Reduce the other dimensions
+    if reduction == 'mean':
+        # Collapse the other dimensions by taking the mean along them
+        for dim in other_dims:
+            grid = jnp.mean(grid, axis=dim, keepdims=False)
+    elif reduction == 'sum':
+        # Collapse the other dimensions by summing along them
+        for dim in other_dims:
+            grid = jnp.sum(grid, axis=dim, keepdims=False)
+    elif reduction == 'slice':
+        # Slice the other dimensions at the specified index
+        for dim in other_dims:
+            grid = jnp.take(grid, slice_index, axis=dim)
+
+    # Step 3: Prepare the X and Y axes using the specified dimensions
+    x = jnp.arange(grid.shape[dim1])
+    y = jnp.arange(grid.shape[dim2])
+
+    # Step 4: Create a meshgrid for the plot
+    X, Y = jnp.meshgrid(x, y)
+
+    # Step 5: Z-values correspond to the grid values along dim1 and dim2
+    Z = grid[:, :]  # Adjust this slicing based on the grid's shape after reduction
+    
+    Z = jnp.exp(Z)
+    Z = Z / jnp.max(Z) * 10 * 3
+
+    # Step 6: Generate the 3D plot using Plotly
+    fig = go.Figure(data=[go.Surface(z=Z, x=X, y=Y)])
+
+    # Step 7: Customize the plot layout
+    fig.update_layout(
+        title="Knowledge Grid Representation",
+        scene=dict(
+            xaxis_title=f"Dimension {dim1}",
+            yaxis_title=f"Dimension {dim2}",
+            zaxis_title=("Knowledge repartition of the technician(%)"),
+            zaxis_range=[0, 100],
+        ),
+        autosize=True,
+    )
+    if streamlit:
+        import streamlit as st
+        st.plotly_chart(fig)
+    else:
+        return fig
