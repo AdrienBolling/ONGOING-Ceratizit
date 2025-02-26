@@ -28,6 +28,5 @@ else:
     
     st.plotly_chart(plotly_fig)
     
-    st.write(knowledge_grid.get_hypervolume())
-    st.write(knowledge_grid._num_tickets)
+    st.write(f"Number of tickets treated : {knowledge_grid._num_tickets}")
         

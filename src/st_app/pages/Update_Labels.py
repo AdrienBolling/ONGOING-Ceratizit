@@ -27,3 +27,8 @@ if uploaded_file is not None:
     
     st.write(f"The labels for the model {selected_model} have been updated.")
     st.write(f"New labels : {uploaded_file}")
+    
+    
+if st.button("Update sectors"):
+    ut.create_technician_file()
+    st.write("The sectors have been updated.")

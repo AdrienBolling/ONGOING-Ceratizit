@@ -18,4 +18,4 @@ cost_center_columns: [24, 25]
 n_clusters: 10
 labeling_file: labeling_help.json
 cluster_labels_subfolder: cluster_labels
-
+minimum_samples_per_sector: 1000

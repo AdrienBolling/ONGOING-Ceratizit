@@ -6,3 +6,4 @@ storage/
 .venv/
 .idea/
 saved_computation/
+Analysis.ipynb

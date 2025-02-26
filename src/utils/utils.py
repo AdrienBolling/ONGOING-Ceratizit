@@ -10,7 +10,7 @@ import pandas as pd
 from sentence_transformers import SentenceTransformer
 import torch
 import yaml
-from src.utils.network import Network
+from src.networks.network import Network
 import numpy as np
 from ongoing.knowledge.grid import KnowledgeGrid, Technician
 from sklearn.cluster import KMeans
@@ -33,8 +33,9 @@ def load_config(config_path=CONFIG_PATH):
 CONFIG = get_config(CONFIG_PATH)
 ROOT_PATH = CONFIG['storage_root']
 OVERWRITE = CONFIG['overwrite']
-
 CONFIG['hp_file_path'] = os.path.join(CONFIG['storage_root'], CONFIG['hp_file'])
+CSV_PATH = os.path.join(CONFIG["storage_root"], CONFIG["raw_data_dir"], CONFIG["raw_data_file"])
+
 
 def get_hp_hash(hyperparameters_dict):
     # Convert the dictionary to a sorted json
@@ -106,6 +107,7 @@ def load_model(hyperparameters_dict, root_path=ROOT_PATH, device=CONFIG['device'
     model_params = hyperparameters_dict.copy()
     # Merge the config dict with the hyperparameters
     model_params.update(CONFIG)
+    model_params["data"] = nlp_embeddings
     
     # Load the model
     model = Network(input_dim=nlp_embeddings.shape[1], **model_params)
@@ -284,7 +286,6 @@ def load_grid(grid_name, hyperparameters_dict, root_path=ROOT_PATH):
     
     return grid
 
-CSV_PATH = os.path.join(CONFIG["storage_root"], CONFIG["raw_data_dir"], CONFIG["raw_data_file"])
 def compute_nlp_embeddings(nlp_model, csv_path=CSV_PATH, relevant_columns=CONFIG["nlp_relevant_columns"]):
     
     # Check if the required nlp embeddings have already been computed
@@ -369,13 +370,6 @@ def encode_data(model, model_hp, nlp_embeddings, device=CONFIG["device"]):
     
     return embeddings
 
-def decode_data(model, embeddings, device=CONFIG["device"]):
-    
-    embeddings = torch.tensor(embeddings).to(device)
-    decoded = model.decode(embeddings)
-    
-    return decoded
-
 def create_model(hyperparameters_dict, root_path=ROOT_PATH):
     # Get the hash of the hyperparameters
     hp_hash = get_hp_hash(hyperparameters_dict)
@@ -397,6 +391,7 @@ def create_model(hyperparameters_dict, root_path=ROOT_PATH):
     model_params = hyperparameters_dict.copy()
     # Merge the config dict with the hyperparameters
     model_params.update(CONFIG)
+    model_params["data"] = nlp_embeddings
     # Create the model
     model = Network(input_dim=nlp_embeddings.shape[1], **model_params)
     
@@ -701,6 +696,44 @@ def label_plotly_fig(fig, cluster_labels, label_coordinates):
             
     return fig
 
+def label_compound_plotly_fig(fig, cluster_labels, label_coordinates):
+    ## To be changed later bcs its a bug
+    
+    # Normalize the coordinates between 0 and 100
+    for key, value in label_coordinates.items():
+        if value[0] > 100:
+            value[0] = 100 - random.randint(2, 50)
+        if value[1] > 100:
+            value[1] = 100 - random.randint(2, 50)
+        if value[0] < 0:
+            value[0] = random.randint(0, 50)
+        if value[1] < 0:
+            value[1] = random.randint(0, 50)
+    new_traces = []
+    for cluster in range(len(cluster_labels)):
+        label = cluster_labels[str(cluster)]
+        coordinates = label_coordinates[str(cluster)]
+        
+        # Check the z_coord of the points already in the plot at this coordinate
+        # If there is already a point at this coordinate, add a random value to the z_coord
+        # If not, add the point with z_coord = 100
+        # If there is already a point at this coordinate, add a random value to the z_coord
+        
+        # Check if there is already a point at this coordinate
+        z_coord = 1
+        if fig.data:
+            z_coord = 0
+            for trace in fig.data:
+                z_coord = max(trace.z[coordinates[0]][coordinates[1]], z_coord)
+            z_coord += 1
+                
+        
+        # Do it using a scatter trace, with the text in the hover
+        new_traces.append(go.Scatter3d(x=[coordinates[0]], y=[coordinates[1]], z=[z_coord], mode="markers", name=f"Cluster {cluster}", text=label, hoverinfo="text", showlegend=False, marker=dict(size=10, color="red")))
+    
+    fig.add_traces(new_traces)
+    return fig
+
 def compute_label_file(grid, model_key):
     technician_id = grid._technician.id
     
@@ -793,6 +826,45 @@ def load_labeled_plotly_fig(grid, model_key):
     plotly_fig = label_plotly_fig(plotly_fig, cluster_labels, label_coordinates)
     
     return plotly_fig
+
+def load_list_of_labeled_plotly_figs(grids, model_key):
+    # Load the labeling file
+    with open(CONFIG['hp_file_path'], 'r') as f:
+        hp_dict = json.load(f)
+        
+    hyperparameters = hp_dict[model_key]
+    
+    model_folder = get_hash_folder(hyperparameters)
+    path = os.path.join(model_folder, CONFIG["labeling_file"])
+    
+    with open(path, "r") as f:
+        labeling = json.load(f)
+        
+    # Load the cluster labels
+    cluster_labels = labeling["labels"]
+    label_coordinates = labeling["coordinates"]
+    
+    _grids = []
+    for grid in grids:
+        # Load the grid
+        grid = load_grid(grid._technician.name, hyperparameters)
+        _grids.append(grid)
+        
+
+    full_fig = render_list_of_grids(_grids, dim1=0, dim2=1)
+    
+    labeled_fig = label_compound_plotly_fig(full_fig, cluster_labels, label_coordinates)
+    labeled_fig.update_layout(
+        legend=dict(
+            yanchor="top",
+            y=0.99,
+            xanchor="left",
+            x=0.01,
+            bordercolor="Black",
+            borderwidth=1
+        )
+    )
+    return labeled_fig
 
 def full_compute(model_hp):
     # Get the hash of the hyperparameters
@@ -901,3 +973,124 @@ def render(grid, dim1: int, dim2: int, reduction='slice', slice_index=0, streaml
         st.plotly_chart(fig)
     else:
         return fig
+    
+    
+def render_list_of_grids(grids, dim1: int, dim2: int, reduction='slice', slice_index=0, streamlit=False):
+    """
+    Render a 3D plot of the grid using two chosen dimensions (dim1, dim2) and reducing the others.
+
+    Args:
+    - dim1 (int): The first dimension to plot on the X axis.
+    - dim2 (int): The second dimension to plot on the Y axis.
+    - reduction (str): How to handle the remaining dimensions ('mean', 'sum', or 'slice').
+    - slice_index (int): If using 'slice' reduction, the index to slice the remaining dimensions at.
+
+    Returns:
+    - Plotly 3D plot figure.
+    """
+    
+    traces = []
+    
+    for grid in grids:
+        # Step 1: Handle the reduction of dimensions other than dim1 and dim2
+        grid_obj = grid
+        grid = grid._grid
+        
+        other_dims = [i for i in range(grid.ndim) if i not in (dim1, dim2)]
+        
+        # Step 2: Reduce the other dimensions
+        
+        if reduction == 'mean':
+            # Collapse the other dimensions by taking the mean along them
+            for dim in other_dims:
+                grid = jnp.mean(grid, axis=dim, keepdims=False)
+        elif reduction == 'sum':
+            # Collapse the other dimensions by summing along them
+            for dim in other_dims:
+                grid = jnp.sum(grid, axis=dim, keepdims=False)
+        elif reduction == 'slice':
+            # Slice the other dimensions at the specified index
+            for dim in other_dims:
+                grid = jnp.take(grid, slice_index, axis=dim)
+                
+        # Step 3: Prepare the X and Y axes using the specified dimensions
+        x = jnp.arange(grid.shape[dim1])
+        y = jnp.arange(grid.shape[dim2])
+        
+        # Step 4: Create a meshgrid for the plot
+        X, Y = jnp.meshgrid(x, y)
+        
+        # Step 5: Z-values correspond to the grid values along dim1 and dim2
+        Z = grid[:, :]
+        
+        Z = jnp.exp(Z)
+        Z = Z / jnp.max(Z) * 10 * 3
+        
+        # Step 6: Generate the 3D plot using Plotly
+        trace = go.Surface(z=Z, x=X, y=Y, name=grid_obj._technician.name, opacity=0.5, showscale=False, showlegend=True)
+        
+        traces.append(trace)
+        
+    # Step 7: Customize the plot layout
+    fig = go.Figure(data=traces)
+    fig.update_layout(
+        title="Knowledge Grid Representation",
+        scene=dict(
+            xaxis_title=f"Dimension {dim1}",
+            yaxis_title=f"Dimension {dim2}",
+            zaxis_title=("Knowledge repartition of the technician(%)"),
+            zaxis_range=[0, 100],
+        ),
+        autosize=True,
+    )
+    
+    if streamlit:
+        import streamlit as st
+        st.plotly_chart(fig)
+    else:
+        return fig
+    
+    
+def create_technician_file(raw_data_path=CSV_PATH):
+    # Load the raw data
+    raw_data = load_raw_data(raw_data_path)
+    
+    # Clean the data
+    clean_data_useful, filtered_data, anonymized_data, full_mask, masked_idx = clean_original_data(raw_data)
+    
+    # For every technician in the filtered data (columns -1), check the sector of the technician in raw data, under the column "D~Mn.wk.ctr"
+    
+    # Get the unique values of the technician
+    technicians = filtered_data.iloc[:, -1].unique()
+    
+    st.write(technicians)
+    
+    raw_data = raw_data[full_mask]
+    
+    # For each technician, get the first sector in the raw data
+    technician_sectors = {}
+    for technician in technicians:
+        mask = filtered_data.iloc[:, -1] == technician
+        masked = raw_data[mask].dropna(subset=["D~Mn.wk.ctr"])
+        sector = masked.iloc[0]["D~Mn.wk.ctr"]
+        technician_sectors[technician] = sector
+        
+    # Save the technician file at the root of the storage folder
+    with open(os.path.join(CONFIG["storage_root"], "technicians.json"), "w") as f:
+        json.dump(technician_sectors, f, indent=4)
+        
+def list_available_sectors():
+    with open(os.path.join(CONFIG["storage_root"], "technicians.json"), "r") as f:
+        technicians = json.load(f)
+        
+    sectors = set(technicians.values())
+    
+    return sectors
+
+def filter_technicians_by_sector(sector):
+    with open(os.path.join(CONFIG["storage_root"], "technicians.json"), "r") as f:
+        technicians = json.load(f)
+        
+    filtered_technicians = [key for key, value in technicians.items() if value == sector]
+    
+    return filtered_technicians

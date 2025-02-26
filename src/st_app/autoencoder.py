@@ -81,6 +81,25 @@ def clustering_loss(x, n_clusters=10):
     return loss
 
 
+def triplet_loss(x, labels):
+    # Compute the pairwise distances
+    distances = torch.cdist(x, x)
+
+    # Compute the mask
+    mask = labels.unsqueeze(0) == labels.unsqueeze(1)
+
+    # Compute the positive distances
+    positive_distances = distances[mask]
+
+    # Compute the negative distances
+    negative_distances = distances[~mask]
+
+    # Compute the loss
+    loss = torch.clamp(positive_distances - negative_distances + 1, min=0).mean()
+
+    return loss
+
+
 def spread_loss(x):
     # Compute pairwise distances
     distances = torch.cdist(x, x)
@@ -92,102 +111,3 @@ def spread_loss(x):
     variance = torch.var(distances)
 
     return variance
-
-
-def main(ac_type='ac'):
-    # Load the data from the embeddings from a csv file with numpy
-
-    data = np.load('data/embeddings_full.npy', allow_pickle=True)
-
-    # Compute the input dimension
-    input_dim = data.shape[1]
-
-    # Define the encoding dimension
-    encoding_dim = 2
-
-    # Create the autoencoder
-    autoencoder = Autoencoder(input_dim, encoding_dim)
-
-    device = 'cpu'
-    batch_size = 64
-    epochs = 100
-    lr = 0.001
-    criterion = nn.MSELoss()
-    optimizer = torch.optim.Adam(autoencoder.parameters(), lr=lr)
-
-    # Split in training in validation set
-
-    train_ratio = 0.8
-
-    train_data, val_data = train_test_split(data, train_size=train_ratio, random_state=42)
-
-    # Create the dataloaders
-    train_data_loader = torch.utils.data.DataLoader(train_data, batch_size=batch_size, shuffle=True)
-    val_data_loader = torch.utils.data.DataLoader(val_data, batch_size=batch_size, shuffle=False)
-
-    # Train the autoencoder
-
-    # Put the device on the right device
-    autoencoder.to(device)
-
-    for epoch in tqdm(range(epochs)):
-        autoencoder.train()
-        train_loss = 0
-        for batch in train_data_loader:
-            optimizer.zero_grad()
-            batch = batch.to(device)
-            output = autoencoder(batch)
-            loss = criterion(output, batch)
-            # Add clustering loss
-            if ac_type == 'ac+clustering':
-                loss += clustering_loss(autoencoder.encode(batch))
-            elif ac_type == 'ac+spread':
-                loss += spread_loss(autoencoder.encode(batch))
-                loss += clustering_loss(autoencoder.encode(batch))
-            loss.backward()
-            optimizer.step()
-            train_loss += loss.item()
-        train_loss /= len(train_data_loader)
-
-        autoencoder.eval()
-        val_loss = 0
-        with torch.no_grad():
-            for batch in val_data_loader:
-                batch = batch.to(device)
-                output = autoencoder(batch)
-                loss = criterion(output, batch)
-                # Add clustering loss
-                if ac_type == 'ac+clustering':
-                    loss += clustering_loss(autoencoder.encode(batch))
-                elif ac_type == 'ac+spread':
-                    loss += spread_loss(autoencoder.encode(batch))
-                    loss += clustering_loss(autoencoder.encode(batch))
-                val_loss += loss.item()
-            val_loss /= len(val_data_loader)
-
-    print(f'Epoch {epoch + 1}/{epochs}, Train Loss: {train_loss:.4f}, Val Loss: {val_loss:.4f}')
-    print('Final RMSE:', np.sqrt(val_loss))
-
-    # Print some comaprisons between the input and the output values
-    autoencoder.eval()
-    with torch.no_grad():
-        batch = val_data[1]
-        batch = torch.tensor(batch).float().to(device)
-        output = autoencoder(batch)
-        print('Input:', batch[5])
-        print('Output:', output[5])
-
-    # Save the model
-    if ac_type == 'ac':
-        torch.save(autoencoder.state_dict(), 'models/autoencoder.pth')
-    elif ac_type == 'ac+clustering':
-        torch.save(autoencoder.state_dict(), 'models/autoencoder_clustering.pth')
-    elif ac_type == 'ac+spread':
-        torch.save(autoencoder.state_dict(), 'models/autoencoder_spread.pth')
-
-
-if __name__ == '__main__':
-    # ac_type = 'ac'
-    # ac_type = 'ac+clustering'
-    ac_type = 'ac+spread'
-    main(ac_type)
