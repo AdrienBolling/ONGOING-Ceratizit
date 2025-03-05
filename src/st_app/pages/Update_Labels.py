@@ -1,6 +1,8 @@
 import json
 import streamlit as st
-import src.utils.utils as ut
+from src.utils.data_utils import create_technician_file
+from src.utils.net_utils import available_models
+from src.utils.utils import update_labels
 
 st.title('Update Labels')
 
@@ -9,7 +11,7 @@ st.write('This page allows you to update the labels of the technician knowledge 
 st.write("Choose one of the computed models to update the labels for.")
 
 # Get the unique values of each key and subkey of the hyperparameters dict of available models
-available_models = ut.available_models().keys()
+available_models = available_models().keys()
 
 # Create a selectbox for each key of the available_models dict
 selected_model = st.selectbox('Select the model you want to use', list(available_models))
@@ -23,12 +25,12 @@ if uploaded_file is not None:
 
 # Load the labeling file for this model
 if uploaded_file is not None:
-    ut.update_labels(model=selected_model, labels_dict=uploaded_file)
+    update_labels(model=selected_model, labels_dict=uploaded_file)
     
     st.write(f"The labels for the model {selected_model} have been updated.")
     st.write(f"New labels : {uploaded_file}")
     
     
 if st.button("Update sectors"):
-    ut.create_technician_file()
+    create_technician_file()
     st.write("The sectors have been updated.")

@@ -19,7 +19,7 @@ else:
     selected_technician = st.selectbox('Select the technician you want to predict the knowledge grid of', available_technicians)
     
     # Get the knowledge grid of the selected technician
-    knowledge_grid = ut.st_load_grid(tech_name=str(selected_technician), model_key=model)
+    knowledge_grid = st_load_grid(tech_name=str(selected_technician), model_key=model)
     
     # Display the knowledge grid
     st.write(f"Knowledge Grid of {selected_technician}")
