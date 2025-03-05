@@ -2,18 +2,21 @@
 ttl: 3600
 storage_root: ./storage
 models_dir: models
-raw_data_dir: raw_data
+raw_data_dir: data
 raw_data_file: original.csv
+clean_data_file: clean.csv
+categorized_data_file: sorted.json
 nlp_embeddings_dir: nlp_embeddings
 grids_subdir: grids
 hp_file: available_hp.json
 hash_encoding: utf-8
-overwrite: false
+overwrite: true
 device: cpu
 nlp_relevant_columns: [1, 5, 28, 30]
 knowledge_grid_side_size: 100
 technician_learning_rate: 0.1
 tickets_relevant_columns: [0, 1, 4, 5, 8, 9, 17]
+technician_column: 17
 cost_center_columns: [24, 25]
 n_clusters: 10
 labeling_file: labeling_help.json

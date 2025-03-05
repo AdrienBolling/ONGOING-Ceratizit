@@ -1,6 +1,77 @@
 {
-    "0": "Machine malfunctions involving sensors, motors, and mechanical parts, including calibration, leaks, and misalignments.",
-    "1": "Maintenance issues such as failures with pumps, robots, valves, and machine resets or startup failures.",
-    "2": "Problems with system calibration, safety checks, and issues related to faulty valves and sensors.",
-    "3": "Mechanical and electrical issues, including broken parts, faulty sensors, motor failures, and machine safety concerns."
-}
+    "M_1624": {
+      "0": "Routine equipment maintenance tasks, including regular sensor recalibrations, lubrication, motor alignment checks, and battery inspections.",
+      "1": "Recurring technical malfunctions, including persistent sensor failures, control system glitches, valve misreads, and temperature regulation errors.",
+      "2": "Critical system alerts, including urgent motor shutdowns, severe hydraulic failures, and major equipment malfunctions requiring immediate intervention."
+    },
+    "M_1623": {
+      "0": "Standard maintenance procedures, including routine inspections, sensor calibrations, and basic component adjustments across machinery.",
+      "1": "Rare anomalous events, including unexpected sensor errors and isolated hydraulic irregularities demanding special attention."
+    },
+    "M_1626": {
+      "0": "Routine service operations, including scheduled inspections, lubrication, and sensor recalibrations for consistent machine performance.",
+      "1": "Occasional technical glitches, including sporadic sensor misreads and minor control system irregularities needing focused diagnostics."
+    },
+    "M_1621": {
+      "0": "Basic maintenance tasks, including regular equipment inspections, sensor checks, and standard alignment procedures across machines.",
+      "1": "Isolated deviations, including rare sensor errors and minor hydraulic issues that fall outside typical maintenance routines."
+    },
+    "M_1628": {
+      "0": "Consistent routine maintenance, including regular component checks, sensor recalibrations, and lubrication tasks ensuring smooth operations.",
+      "1": "Atypical events, including singular sensor malfunctions or unexpected component failures noted during service calls."
+    },
+    "M_1627": {
+      "0": "Standard maintenance activities, including routine inspections, lubrication, and sensor recalibrations across various machines.",
+      "1": "Minor irregularities, including occasional valve misreads and slight hydraulic fluctuations requiring targeted adjustments.",
+      "2": "Emerging technical challenges, including intermittent motor issues and early signs of system wear needing proactive interventions.",
+      "3": "Isolated critical alerts, including unique mechanical failures and abrupt control errors demanding immediate review."
+    },
+    "M_1622": {
+      "0": "Routine maintenance operations, including regular equipment checks, sensor recalibrations, and standard lubrication procedures.",
+      "1": "Rare exceptional events, including unexpected sensor failures or isolated control system anomalies requiring detailed inspections."
+    },
+    "M_1629": {
+      "0": "Minor service issues, including infrequent sensor misalignments and basic component adjustments during routine maintenance.",
+      "1": "Moderate technical faults, including recurring sensor errors, valve irregularities, and standard control system glitches.",
+      "2": "Performance-related anomalies, including intermittent temperature errors and fluctuating hydraulic pressures needing prompt action.",
+      "3": "Complex mechanical malfunctions, including persistent motor failures, control system breakdowns, and severe hydraulic issues.",
+      "4": "Extremely rare cases, including atypical component failures or borderline anomalies warranting minimal yet focused investigation."
+    },
+    "M_1620": {
+      "0": "Less frequent service calls, including basic equipment inspections, sensor recalibrations, and minor component adjustments.",
+      "1": "Predominantly recurring issues, including regular sensor errors, control system glitches, and standard component recalibrations."
+    },
+    "M_1625": {
+      "0": "Uniform maintenance tasks, including scheduled inspections, lubrication, and routine sensor recalibrations across all equipment.",
+      "1": "A singular anomaly, including an isolated sensor or component error distinctly deviating from routine maintenance patterns."
+    },
+    "M_1633": {
+      "0": "Highly standardized maintenance, including routine component checks, sensor alignments, and lubrication processes ensuring steady performance.",
+      "1": "A one-off deviation, including an unexpected sensor or control anomaly observed during regular service procedures."
+    },
+    "M_1624P": {
+      "0": "Routine production maintenance, including regular equipment inspections, sensor recalibrations, and consistent lubrication checks.",
+      "1": "An exceptional event, including an isolated component failure or unexpected sensor error noted during operations."
+    },
+    "M_1623P": {
+      "0": "Standard maintenance tasks, including routine sensor checks, calibrations, and component adjustments with predictable outcomes.",
+      "1": "A rare anomaly, including an unusual sensor or hydraulic issue that deviates from standard maintenance routines."
+    },
+    "M_1632": {
+      "0": "Less common service events, including sporadic sensor misreads and minor component adjustments not typically observed.",
+      "1": "The predominant group, including standard maintenance tasks like routine inspections, lubrication, and sensor recalibrations."
+    },
+    "M_1630": {
+      "0": "Routine maintenance issues, including regular equipment inspections, sensor recalibrations, and standard component servicing.",
+      "1": "An isolated incident, including a unique sensor or control error that stands out from routine operations."
+    },
+    "M_1631": {
+      "0": "Standard maintenance operations, including predictable sensor recalibrations, lubrication, and regular equipment inspections.",
+      "1": "A solitary deviation, including an uncommon sensor malfunction or control anomaly noted during service."
+    },
+    "M_1634": {
+      "0": "Routine maintenance tasks, including regular inspections, lubrication, and sensor adjustments ensuring consistent equipment performance.",
+      "1": "A singular anomaly, including a rare sensor or component error that deviates from the standard maintenance routine."
+    }
+  }
+  

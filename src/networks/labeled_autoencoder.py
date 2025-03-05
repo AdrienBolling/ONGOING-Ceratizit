@@ -5,11 +5,10 @@ import numpy as np
 from sklearn.model_selection import train_test_split
 from sklearn.cluster import DBSCAN, KMeans
 import logging
-from src.networks.network import TrainableNetwork
 
 logger = logging.getLogger(__name__)
 
-class LabeledAE(nn.Module, TrainableNetwork):
+class LabeledAE(nn.Module):
     
     def __init__(self, input_dim, **kwargs):
         super(LabeledAE, self).__init__()
