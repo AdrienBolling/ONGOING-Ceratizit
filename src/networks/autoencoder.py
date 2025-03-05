@@ -6,11 +6,10 @@ from sklearn.model_selection import train_test_split
 from sklearn.cluster import DBSCAN, KMeans
 from sklearn.metrics import silhouette_score
 import logging
-from src.networks.network import TrainableNetwork
 
 logger = logging.getLogger(__name__)
 
-class Autoencoder(nn.Module, TrainableNetwork):
+class Autoencoder(nn.Module):
     def __init__(self, input_dim, **kwargs):
         super(Autoencoder, self).__init__()
         encoding_dim = kwargs.get('encoding_dim', 2)
