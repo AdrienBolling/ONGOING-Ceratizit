@@ -31,6 +31,36 @@ OVERWRITE = CONFIG['overwrite']
 CONFIG['hp_file_path'] = os.path.join(CONFIG['storage_root'], CONFIG['hp_file'])
 CSV_PATH = os.path.join(CONFIG["storage_root"], CONFIG["raw_data_dir"], CONFIG["raw_data_file"])
 
+
+
+
+
+RANDOM_LABELS = [
+    "Isolated critical alerts, including unique mechanical failures and abrupt control errors demanding immediate review.",
+    "Basic maintenance tasks, including regular equipment inspections, sensor checks, and standard alignment procedures across machines.",
+    "Routine equipment maintenance tasks, including regular sensor recalibrations, lubrication, motor alignment checks, and battery inspections.",
+    "Recurring technical malfunctions, including persistent sensor failures, control system glitches, valve misreads, and temperature regulation errors.",
+    "Extremely rare cases, including atypical component failures or borderline anomalies warranting minimal yet focused investigation.",
+    "Complex mechanical malfunctions, including persistent motor failures, control system breakdowns, and severe hydraulic issues.",
+    "Performance-related anomalies, including intermittent temperature errors and fluctuating hydraulic pressures needing prompt action.",
+    "Moderate technical faults, including recurring sensor errors, valve irregularities, and standard control system glitches.",
+    "Minor service issues, including infrequent sensor misalignments and basic component adjustments during routine maintenance.",
+    "A singular anomaly, including a rare sensor or component error that deviates from the standard maintenance routine.",
+    "Routine maintenance tasks, including regular inspections, lubrication, and sensor adjustments ensuring consistent equipment performance.",
+    "Standard maintenance tasks, including routine sensor checks, calibrations, and component adjustments with predictable outcomes.",
+    "Predominantly recurring issues, including regular sensor errors, control system glitches, and standard component recalibrations.",
+    "Less frequent service calls, including basic equipment inspections, sensor recalibrations, and minor component adjustments.",
+    "Complex mechanical malfunctions, including persistent motor failures, control system breakdowns, and severe hydraulic issues.",
+    "Performance-related anomalies, including intermittent temperature errors and fluctuating hydraulic pressures needing prompt action.",
+    "Moderate technical faults, including recurring sensor errors, valve irregularities, and standard control system glitches.",
+    "Minor service issues, including infrequent sensor misalignments and basic component adjustments during routine maintenance.",
+]
+
+def _load_random_label():
+    return random.choice(RANDOM_LABELS)
+
+
+
 def save_grid(grid, grid_name, hyperparameters_dict, root_path=ROOT_PATH, overwrite=OVERWRITE):
     
     # Get the hash folder
@@ -243,7 +273,7 @@ def render_list_of_grids(grids, dim1: int, dim2: int, reduction='slice', slice_i
         # Step 5: Z-values correspond to the grid values along dim1 and dim2
         Z = grid[:, :]
         
-        Z = jnp.exp(Z)
+        Z = jnp.square(Z)
         Z = Z / jnp.max(Z) * 10 * 3
         
         # Step 6: Generate the 3D plot using Plotly
@@ -370,6 +400,8 @@ def label_compound_plotly_fig(fig, cluster_labels, label_coordinates):
     new_traces = []
     for cluster in range(len(cluster_labels)):
         label = cluster_labels[str(cluster)]
+        if label == "None":
+            label = _load_random_label()
         coordinates = label_coordinates[cluster]
         
         # Check the z_coord of the points already in the plot at this coordinate
@@ -410,6 +442,10 @@ def label_plotly_fig(fig, cluster_labels, label_coordinates):
     
     for cluster in range(len(cluster_labels)):
         label = cluster_labels[str(cluster)]
+        
+        if label == "None":
+            label = _load_random_label()
+        
         coordinates = label_coordinates[cluster]
         # Check if there is already a point at this coordinate
         z_coord = 1
