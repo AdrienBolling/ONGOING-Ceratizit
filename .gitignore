@@ -7,3 +7,6 @@ storage/
 .idea/
 saved_computation/
 Analysis.ipynb
+labels.json
+labels2.json
+log.csv
