@@ -1,6 +1,8 @@
 import streamlit as st
 import json
 import jax.numpy as jnp
+import numpy as np
+import pandas as pd
 
 from src.utils.grid_utils import load_grid
 from src.utils.net_utils import encode_ticket
@@ -52,14 +54,23 @@ with st.form("Maintenance Ticket"):
             
             coords = [grid.embedding_to_coords(ticket_emb) for grid in grids]
             # coords = [coord.tolist() for coord in coords]
-            coord = tuple(coords[0][0].tolist())
+            coord = coords[0][0], coords[0][1]
             knowledges = [grid._grid[coord] for grid in grids]
             # Get the technician with the best knowledge with argmax
             best_tech = technicians[knowledges.index(max(knowledges))]
+            best_knowledge = max(knowledges)
+            worst_knowledge = min(knowledges)
+            interval = (best_knowledge - worst_knowledge) / 10
+            best_techs = [technicians[i] for i in range(len(knowledges)) if knowledges[i] >= best_knowledge - interval]
+            # Rank the list by their knowledge
+            best_techs = sorted(best_techs, key=lambda x: knowledges[technicians.index(x)], reverse=True)
             # Get the technician grid
+            
+            # Create a string with the best technicians
+            best_tech_str = (", ").join(best_techs[:-1]) + " and " + best_techs[-1] if len(best_techs) > 1 else best_techs[0]
         
         # Return the result
-        st.info(f"We recommend you to assign this ticket to {best_tech}.")
+        st.info(f"We recommend you to assign this ticket to {best_tech_str}.")
         
         
     

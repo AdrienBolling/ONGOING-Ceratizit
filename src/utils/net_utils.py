@@ -269,7 +269,7 @@ def encode_ticket(ticket_nlp_emb, sector_key, model_key):
     ticket_nlp_emb = torch.tensor(ticket_nlp_emb).to(CONFIG["device"])
     
     # Encode the data
-    ticket_embedding = sector_models[sector_key].encode(ticket_nlp_emb)
+    ticket_embedding = sector_models[sector_key].encode_deterministic(ticket_nlp_emb)
     
     # Convert to numpy
     ticket_embedding = ticket_embedding.cpu().numpy()

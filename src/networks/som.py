@@ -277,6 +277,31 @@ class KohonenSOM(nn.Module):
         
         # Squeeze to get a 1D tensor of BMU indices.
         return chosen_indices.squeeze(1)
+    
+    def get_bmu_deterministic(self, x):
+        """
+        Identify the Best Matching Unit (BMU) for a single input vector.
+
+        Args:
+            x (Tensor): Input vector of shape (input_dim,).
+
+        Returns:
+            int: Index of the BMU.
+        """
+        # Ensure x is a tensor and on the correct device.
+        if not torch.is_tensor(x):
+            x = torch.tensor(x, dtype=torch.float)
+        if x.device != self.device:
+            x = x.to(self.device)
+        if x.dim() == 1:
+            x = x.unsqueeze(0)
+        # Compute distances for the input vector.
+        distances = self.forward(x)
+        # Get the index of the minimum distance.
+        min_index = torch.argmin(distances, dim=1)
+        # Squeeze to get a scalar index.
+        return min_index.squeeze(0)
+    
 
     def update_weights(self, x, bmu_index, lr, iteration, radius):
         """
@@ -353,6 +378,28 @@ class KohonenSOM(nn.Module):
         bmu_indices = self.get_bmu(data)
         bmu_coords = self.locations[bmu_indices]  # shape: (n_samples, 2)
         return bmu_coords
+    
+    def map_data_to_bmu_deterministic(self, data):
+        """
+        Map each input sample in a batch to the coordinates of its BMU.
+        This function computes the BMU for each input in a vectorized manner.
+        Args:
+            data (Tensor): Input data of shape (n_samples, input_dim).
+        Returns:
+            Tensor: BMU coordinates for each input, shape (n_samples, 2).
+        """
+        
+        # Ensure data is a tensor.
+        if not torch.is_tensor(data):
+            data = torch.tensor(data, dtype=torch.float)
+        
+        # Ensure data is on the same device.
+        if data.device != self.device:
+            data = data.to(self.device)
+        # Use the get_bmu function to find the BMU for each input.
+        bmu_indices = self.get_bmu_deterministic(data)
+        bmu_coords = self.locations[bmu_indices]
+        return bmu_coords  # shape: (n_samples, 2)
 
     def _train(self, data):
         """
@@ -443,6 +490,18 @@ class KohonenSOM(nn.Module):
             Tensor: BMU coordinates for each input, shape (n_samples, 2).
         """
         return self.map_data_to_bmu(data)
+    
+    def encode_deterministic(self, data):
+        """
+        Map input data to the coordinates of their BMU.
+
+        Args:
+            data (Tensor): Input data of shape (n_samples, input_dim).
+
+        Returns:
+            Tensor: BMU coordinates for each input, shape (n_samples, 2).
+        """
+        return self.map_data_to_bmu_deterministic(data)
     
     def _save(self, path):
         """
