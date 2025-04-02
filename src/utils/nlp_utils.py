@@ -146,3 +146,10 @@ def load_nlp_embeddings(nlp_model, nlp_embeddings_dir=CONFIG["nlp_embeddings_dir
         embeddings_cost_centers_dict = pickle.load(f)
         
     return embeddings, texts, embeddings_cost_centers_dict
+
+def embbed_text(text, nlp_model):
+    """
+    Embeds a text using the nlp model
+    """
+    model = SentenceTransformer(nlp_model)
+    return model.encode(text)

@@ -28,6 +28,17 @@ OVERWRITE = CONFIG['overwrite']
 CONFIG['hp_file_path'] = os.path.join(CONFIG['storage_root'], CONFIG['hp_file'])
 CSV_PATH = os.path.join(CONFIG["storage_root"], CONFIG["raw_data_dir"], CONFIG["raw_data_file"])
 
+def get_hp_file_path():
+    """
+    Returns the path to the hyperparameters file
+    """
+    return os.path.join(CONFIG['storage_root'], CONFIG['hp_file'])
+
+def get_tech_file_path():
+    """
+    Returns the path to the technician file
+    """
+    return os.path.join(CONFIG['storage_root'], "technicians.json")
     
 def compute_label_file(model_key):
     

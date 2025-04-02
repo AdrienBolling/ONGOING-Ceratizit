@@ -10,6 +10,7 @@ import yaml
 from src.networks.network import Network
 import numpy as np
 import csv
+import streamlit as st
 
 from src.utils.nlp_utils import load_nlp_embeddings
 
@@ -93,7 +94,7 @@ def load_model(hyperparameters_dict, root_path=ROOT_PATH, device=CONFIG['device'
     hp_hash = get_hp_hash(hyperparameters_dict)
     
     # Get the model path
-    model_folder = os.path.join(root_path, CONFIG["models_dir"], f"{hp_hash}", "weights")
+    model_folder = os.path.join(root_path, CONFIG["models_dir"], f"{hp_hash}", "weights/")
     
     # Check if the model exists
     if not os.path.exists(model_folder):
@@ -253,6 +254,27 @@ def encode_data(sector_models, model_hp, categorized_nlp_embeddings, device=CONF
     # Save the embeddings
     save_embeddings(embeddings, model_hp)
     return embeddings
+
+def encode_ticket(ticket_nlp_emb, sector_key, model_key):
+    # Get the hyperparameters of the model
+    with open(CONFIG['hp_file_path'], 'r') as f:
+        hp_dict = json.load(f)
+        
+    hyperparameters = hp_dict[model_key]
+    
+    # Load the model
+    sector_models = load_model(hyperparameters)
+    
+    # Encode the data
+    ticket_nlp_emb = torch.tensor(ticket_nlp_emb).to(CONFIG["device"])
+    
+    # Encode the data
+    ticket_embedding = sector_models[sector_key].encode(ticket_nlp_emb)
+    
+    # Convert to numpy
+    ticket_embedding = ticket_embedding.cpu().numpy()
+    
+    return ticket_embedding
 
 
 def compute_embeddings(hp_hash, root_path=ROOT_PATH):
