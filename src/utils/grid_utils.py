@@ -9,6 +9,7 @@ import numpy as np
 from ongoing.knowledge.grid import KnowledgeGrid, Technician
 import jax.numpy as jnp
 import plotly.graph_objects as go
+import gettext
 
 from src.utils.data_utils import _clean_raw_data
 from src.utils.net_utils import get_hash_folder, load_embeddings
@@ -55,6 +56,28 @@ RANDOM_LABELS = [
     "Moderate technical faults, including recurring sensor errors, valve irregularities, and standard control system glitches.",
     "Minor service issues, including infrequent sensor misalignments and basic component adjustments during routine maintenance.",
 ]
+_ = gettext.gettext
+if False:
+    # This is a way to expose the translated strings to babel package
+    _("Isolated critical alerts, including unique mechanical failures and abrupt control errors demanding immediate review.")
+    _("Basic maintenance tasks, including regular equipment inspections, sensor checks, and standard alignment procedures across machines.")
+    _("Routine equipment maintenance tasks, including regular sensor recalibrations, lubrication, motor alignment checks, and battery inspections.")
+    _("Recurring technical malfunctions, including persistent sensor failures, control system glitches, valve misreads, and temperature regulation errors.")
+    _("Extremely rare cases, including atypical component failures or borderline anomalies warranting minimal yet focused investigation.")
+    _("Complex mechanical malfunctions, including persistent motor failures, control system breakdowns, and severe hydraulic issues.")
+    _("Performance-related anomalies, including intermittent temperature errors and fluctuating hydraulic pressures needing prompt action.")
+    _("Moderate technical faults, including recurring sensor errors, valve irregularities, and standard control system glitches.")
+    _("Minor service issues, including infrequent sensor misalignments and basic component adjustments during routine maintenance.")
+    _("A singular anomaly, including a rare sensor or component error that deviates from the standard maintenance routine.")
+    _("Routine maintenance tasks, including regular inspections, lubrication, and sensor adjustments ensuring consistent equipment performance.")
+    _("Standard maintenance tasks, including routine sensor checks, calibrations, and component adjustments with predictable outcomes.")
+    _("Predominantly recurring issues, including regular sensor errors, control system glitches, and standard component recalibrations.")
+    _("Less frequent service calls, including basic equipment inspections, sensor recalibrations, and minor component adjustments.")
+    _("Complex mechanical malfunctions, including persistent motor failures, control system breakdowns, and severe hydraulic issues.")
+    _("Performance-related anomalies, including intermittent temperature errors and fluctuating hydraulic pressures needing prompt action.")
+    _("Moderate technical faults, including recurring sensor errors, valve irregularities, and standard control system glitches.")
+    _("Minor service issues, including infrequent sensor misalignments and basic component adjustments during routine maintenance.")
+    
 
 def _load_random_label():
     return random.choice(RANDOM_LABELS)
@@ -301,7 +324,7 @@ def render_list_of_grids(grids, dim1: int, dim2: int, reduction='slice', slice_i
         return fig
 
 
-def load_list_of_labeled_plotly_figs(grids, model_key):
+def load_list_of_labeled_plotly_figs(grids, model_key, lang_loader):
     # Load the labeling file
     with open(CONFIG['hp_file_path'], 'r') as f:
         hp_dict = json.load(f)
@@ -334,7 +357,7 @@ def load_list_of_labeled_plotly_figs(grids, model_key):
 
     full_fig = render_list_of_grids(_grids, dim1=0, dim2=1)
     
-    labeled_fig = label_compound_plotly_fig(full_fig, cluster_labels, label_coordinates)
+    labeled_fig = label_compound_plotly_fig(full_fig, cluster_labels, label_coordinates, lang_loader=lang_loader)
     labeled_fig.update_layout(
         legend=dict(
             yanchor="top",
@@ -384,7 +407,7 @@ def load_labeled_plotly_fig(grid, model_key):
     
     return plotly_fig
 
-def label_compound_plotly_fig(fig, cluster_labels, label_coordinates):
+def label_compound_plotly_fig(fig, cluster_labels, label_coordinates, lang_loader):
     ## To be changed later bcs its a bug
     # Normalize the coordinates between 0 and 100
     label_coordinates = [list(val) for val in label_coordinates]
@@ -400,8 +423,9 @@ def label_compound_plotly_fig(fig, cluster_labels, label_coordinates):
     new_traces = []
     for cluster in range(len(cluster_labels)):
         label = cluster_labels[str(cluster)]
-        if label == "None":
-            label = _load_random_label()
+        #if label == "None":
+            #label = lang_loader(_load_random_label())
+        label = lang_loader(_load_random_label())
         coordinates = label_coordinates[cluster]
         
         # Check the z_coord of the points already in the plot at this coordinate

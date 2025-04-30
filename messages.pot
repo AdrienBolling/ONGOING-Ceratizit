@@ -1,0 +1,182 @@
+# Translations template for PROJECT.
+# Copyright (C) 2025 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2025.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2025-04-30 12:01+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.16.0\n"
+
+#: src/st_app/Knowledge_Grids.py:20 src/st_app/pages/Original_Data.py:21
+#: src/st_app/pages/Technician_Recommandation.py:27
+msgid "Choose language"
+msgstr ""
+
+#: src/st_app/Knowledge_Grids.py:33
+msgid "Technician Knowledge Grids"
+msgstr ""
+
+#: src/st_app/Knowledge_Grids.py:41
+msgid "The model is loaded."
+msgstr ""
+
+#: src/st_app/Knowledge_Grids.py:49
+msgid "Select the sector you want to predict the knowledge grid of"
+msgstr ""
+
+#: src/st_app/pages/Original_Data.py:34
+msgid "Raw Data Visualisation"
+msgstr ""
+
+#: src/st_app/pages/Original_Data.py:38
+msgid "Raw Data"
+msgstr ""
+
+#: src/st_app/pages/Original_Data.py:43
+msgid "Useful Data"
+msgstr ""
+
+#: src/st_app/pages/Technician_Recommandation.py:40
+msgid "Technician Recommandation"
+msgstr ""
+
+#: src/st_app/pages/Technician_Recommandation.py:57
+msgid "Maintenance Ticket"
+msgstr ""
+
+#: src/st_app/pages/Technician_Recommandation.py:59
+msgid "Please fill in the following information:"
+msgstr ""
+
+#: src/st_app/pages/Technician_Recommandation.py:60
+msgid "Sector"
+msgstr ""
+
+#: src/st_app/pages/Technician_Recommandation.py:61
+msgid "Short Description (Notification Description)"
+msgstr ""
+
+#: src/st_app/pages/Technician_Recommandation.py:62
+msgid "Equipment Name"
+msgstr ""
+
+#: src/st_app/pages/Technician_Recommandation.py:63
+msgid "Long Description (Notification Text)"
+msgstr ""
+
+#: src/st_app/pages/Technician_Recommandation.py:66
+msgid "Submit"
+msgstr ""
+
+#: src/st_app/pages/Technician_Recommandation.py:69
+msgid "Ticket submitted successfully!"
+msgstr ""
+
+#: src/st_app/pages/Technician_Recommandation.py:72
+msgid "Please Wait..."
+msgstr ""
+
+#: src/st_app/pages/Technician_Recommandation.py:98
+msgid " and "
+msgstr ""
+
+#: src/st_app/pages/Technician_Recommandation.py:101
+msgid "We recommend you to assign this ticket to "
+msgstr ""
+
+#: src/utils/grid_utils.py:62
+msgid ""
+"Isolated critical alerts, including unique mechanical failures and abrupt"
+" control errors demanding immediate review."
+msgstr ""
+
+#: src/utils/grid_utils.py:63
+msgid ""
+"Basic maintenance tasks, including regular equipment inspections, sensor "
+"checks, and standard alignment procedures across machines."
+msgstr ""
+
+#: src/utils/grid_utils.py:64
+msgid ""
+"Routine equipment maintenance tasks, including regular sensor "
+"recalibrations, lubrication, motor alignment checks, and battery "
+"inspections."
+msgstr ""
+
+#: src/utils/grid_utils.py:65
+msgid ""
+"Recurring technical malfunctions, including persistent sensor failures, "
+"control system glitches, valve misreads, and temperature regulation "
+"errors."
+msgstr ""
+
+#: src/utils/grid_utils.py:66
+msgid ""
+"Extremely rare cases, including atypical component failures or borderline"
+" anomalies warranting minimal yet focused investigation."
+msgstr ""
+
+#: src/utils/grid_utils.py:67 src/utils/grid_utils.py:76
+msgid ""
+"Complex mechanical malfunctions, including persistent motor failures, "
+"control system breakdowns, and severe hydraulic issues."
+msgstr ""
+
+#: src/utils/grid_utils.py:68 src/utils/grid_utils.py:77
+msgid ""
+"Performance-related anomalies, including intermittent temperature errors "
+"and fluctuating hydraulic pressures needing prompt action."
+msgstr ""
+
+#: src/utils/grid_utils.py:69 src/utils/grid_utils.py:78
+msgid ""
+"Moderate technical faults, including recurring sensor errors, valve "
+"irregularities, and standard control system glitches."
+msgstr ""
+
+#: src/utils/grid_utils.py:70 src/utils/grid_utils.py:79
+msgid ""
+"Minor service issues, including infrequent sensor misalignments and basic"
+" component adjustments during routine maintenance."
+msgstr ""
+
+#: src/utils/grid_utils.py:71
+msgid ""
+"A singular anomaly, including a rare sensor or component error that "
+"deviates from the standard maintenance routine."
+msgstr ""
+
+#: src/utils/grid_utils.py:72
+msgid ""
+"Routine maintenance tasks, including regular inspections, lubrication, "
+"and sensor adjustments ensuring consistent equipment performance."
+msgstr ""
+
+#: src/utils/grid_utils.py:73
+msgid ""
+"Standard maintenance tasks, including routine sensor checks, "
+"calibrations, and component adjustments with predictable outcomes."
+msgstr ""
+
+#: src/utils/grid_utils.py:74
+msgid ""
+"Predominantly recurring issues, including regular sensor errors, control "
+"system glitches, and standard component recalibrations."
+msgstr ""
+
+#: src/utils/grid_utils.py:75
+msgid ""
+"Less frequent service calls, including basic equipment inspections, "
+"sensor recalibrations, and minor component adjustments."
+msgstr ""
+

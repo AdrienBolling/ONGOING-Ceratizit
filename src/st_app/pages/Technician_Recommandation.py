@@ -3,13 +3,41 @@ import json
 import jax.numpy as jnp
 import numpy as np
 import pandas as pd
+import os
 
 from src.utils.grid_utils import load_grid
 from src.utils.net_utils import encode_ticket
 from src.utils.nlp_utils import embbed_text
 from src.utils.utils import get_hp_file_path, get_tech_file_path
 
-st.title('Technician Recommandation')
+import gettext
+# Default language setup
+if "lang" not in st.session_state:
+    st.session_state["lang"] = "en"
+lang_choice = st.session_state["lang"]
+locale_path = os.path.join(os.getcwd(), "locales")
+try:
+    trans = gettext.translation("messages", localedir=locale_path, languages=[lang_choice])
+    trans.install()
+    _ = trans.gettext
+except FileNotFoundError:
+    _ = gettext.gettext
+    
+lang_choice = st.sidebar.selectbox(
+    _("Choose language"),
+    options=["en", "fr"],
+    index=["en", "fr"].index(st.session_state["lang"]),
+    key="lang_selector"
+)
+st.session_state["lang"] = lang_choice
+try:
+    trans = gettext.translation("messages", localedir=locale_path, languages=[lang_choice])
+    trans.install()
+    _ = trans.gettext
+except FileNotFoundError:
+    _ = gettext.gettext
+
+st.title(_('Technician Recommandation'))
 model = "24745a5817597c61afc5620897bb4376825b9ce2d0e07e64167b3f687fdb0e8b"
 # Get the hyperparameters of the model
 hp_file_path = get_hp_file_path()
@@ -26,22 +54,22 @@ with open(tech_file_path, 'r') as file:
 sector = None
 aggregated_text = None
 unique_sectors = list(set(tech_data.values()))
-with st.form("Maintenance Ticket"):
+with st.form(_("Maintenance Ticket")):
     
-    st.write("Please fill in the following information:")
-    ticket_sector = st.selectbox("Sector", unique_sectors)
-    ticket_short_description = st.text_input("Short Description (Notification Description)")
-    ticket_equipement_name = st.text_input("Equipment Name")
-    ticket_long_description = st.text_area("Long Description (Notification Text)")
+    st.write(_("Please fill in the following information:"))
+    ticket_sector = st.selectbox(_("Sector"), unique_sectors)
+    ticket_short_description = st.text_input(_("Short Description (Notification Description)"))
+    ticket_equipement_name = st.text_input(_("Equipment Name"))
+    ticket_long_description = st.text_area(_("Long Description (Notification Text)"))
     
     # Submit button
-    submitted = st.form_submit_button("Submit")
+    submitted = st.form_submit_button(_("Submit"))
     
     if submitted:
-        st.write("Ticket submitted successfully!")
+        st.write(_("Ticket submitted successfully!"))
         sector = ticket_sector
         aggregated_text = f"{ticket_short_description} {ticket_equipement_name} {ticket_long_description}"
-        with st.spinner("Please Wait..."):
+        with st.spinner(_("Please Wait...")):
 
             # Create the nlp embedding from the text
             nlp_emb = embbed_text(aggregated_text, nlp_model)
@@ -67,10 +95,10 @@ with st.form("Maintenance Ticket"):
             # Get the technician grid
             
             # Create a string with the best technicians
-            best_tech_str = (", ").join(best_techs[:-1]) + " and " + best_techs[-1] if len(best_techs) > 1 else best_techs[0]
+            best_tech_str = (", ").join(best_techs[:-1]) + _(" and ") + best_techs[-1] if len(best_techs) > 1 else best_techs[0]
         
         # Return the result
-        st.info(f"We recommend you to assign this ticket to {best_tech_str}.")
+        st.info(_("We recommend you to assign this ticket to ") + best_tech_str)
         
         
     

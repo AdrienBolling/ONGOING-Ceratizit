@@ -1,0 +1,138 @@
+# French translations for PROJECT.
+# Copyright (C) 2025 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2025.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2025-04-30 12:01+0200\n"
+"PO-Revision-Date: 2025-04-30 11:46+0200\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: fr\n"
+"Language-Team: fr <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.16.0\n"
+
+#: src/st_app/Knowledge_Grids.py:20 src/st_app/pages/Original_Data.py:21
+#: src/st_app/pages/Technician_Recommandation.py:27
+msgid "Choose language"
+msgstr "Choix de langue"
+
+#: src/st_app/Knowledge_Grids.py:33
+msgid "Technician Knowledge Grids"
+msgstr "Grilles de compétences des Techniciens"
+
+#: src/st_app/Knowledge_Grids.py:41
+msgid "The model is loaded."
+msgstr "Le modèle est chargé"
+
+#: src/st_app/Knowledge_Grids.py:49
+msgid "Select the sector you want to predict the knowledge grid of"
+msgstr "Choisissez le secteur que vous voulez étudier"
+
+#: src/st_app/pages/Original_Data.py:34
+msgid "Raw Data Visualisation"
+msgstr "Visualisation des données brutes"
+
+#: src/st_app/pages/Original_Data.py:38
+msgid "Raw Data"
+msgstr "Données brutes"
+
+#: src/st_app/pages/Original_Data.py:43
+msgid "Useful Data"
+msgstr "Données retenues"
+
+#: src/st_app/pages/Technician_Recommandation.py:40
+msgid "Technician Recommandation"
+msgstr "Recommandation de Technicien"
+
+#: src/st_app/pages/Technician_Recommandation.py:57
+msgid "Maintenance Ticket"
+msgstr "Ticket de Maintenance"
+
+#: src/st_app/pages/Technician_Recommandation.py:59
+msgid "Please fill in the following information:"
+msgstr "Remplissez les informations suivantes"
+
+#: src/st_app/pages/Technician_Recommandation.py:60
+msgid "Sector"
+msgstr "Secteur"
+
+#: src/st_app/pages/Technician_Recommandation.py:61
+msgid "Short Description (Notification Description)"
+msgstr "Courte description (Description de la notification)"
+
+#: src/st_app/pages/Technician_Recommandation.py:62
+msgid "Equipment Name"
+msgstr "Nom de l'équipement"
+
+#: src/st_app/pages/Technician_Recommandation.py:63
+msgid "Long Description (Notification Text)"
+msgstr "Description longue (Texte de la notification)"
+
+#: src/st_app/pages/Technician_Recommandation.py:66
+msgid "Submit"
+msgstr "Valider"
+
+#: src/st_app/pages/Technician_Recommandation.py:69
+msgid "Ticket submitted successfully!"
+msgstr "Ticket soumis"
+
+#: src/st_app/pages/Technician_Recommandation.py:72
+msgid "Please Wait..."
+msgstr "Veuillez patienter"
+
+#: src/st_app/pages/Technician_Recommandation.py:98
+msgid " and "
+msgstr " et "
+
+#: src/st_app/pages/Technician_Recommandation.py:101
+msgid "We recommend you to assign this ticket to "
+msgstr "Nous vous recommandons d'assigner le ticket à "
+
+msgid "Isolated critical alerts, including unique mechanical failures and abrupt control errors demanding immediate review."
+msgstr "Alertes critiques isolées, incluant des défaillances mécaniques uniques et des erreurs de contrôle soudaines nécessitant un examen immédiat."
+
+msgid "Basic maintenance tasks, including regular equipment inspections, sensor checks, and standard alignment procedures across machines."
+msgstr "Tâches de maintenance de base, incluant des inspections régulières de l’équipement, des vérifications de capteurs et des procédures d’alignement standard sur les machines."
+
+msgid "Routine equipment maintenance tasks, including regular sensor recalibrations, lubrication, motor alignment checks, and battery inspections."
+msgstr "Tâches d’entretien de routine de l’équipement, incluant des recalibrages réguliers des capteurs, la lubrification, des vérifications d’alignement des moteurs et des inspections de batteries."
+
+msgid "Recurring technical malfunctions, including persistent sensor failures, control system glitches, valve misreads, and temperature regulation errors."
+msgstr "Pannes techniques récurrentes, incluant des défaillances persistantes des capteurs, des bugs du système de contrôle, des lectures erronées de vannes et des erreurs de régulation de température."
+
+msgid "Extremely rare cases, including atypical component failures or borderline anomalies warranting minimal yet focused investigation."
+msgstr "Cas extrêmement rares, incluant des défaillances atypiques de composants ou des anomalies limites nécessitant une enquête minimale mais ciblée."
+
+msgid "Complex mechanical malfunctions, including persistent motor failures, control system breakdowns, and severe hydraulic issues."
+msgstr "Pannes mécaniques complexes, incluant des défaillances persistantes de moteurs, des pannes du système de contrôle et de graves problèmes hydrauliques."
+
+msgid "Performance-related anomalies, including intermittent temperature errors and fluctuating hydraulic pressures needing prompt action."
+msgstr "Anomalies liées aux performances, incluant des erreurs de température intermittentes et des pressions hydrauliques fluctuantes nécessitant une action rapide."
+
+msgid "Moderate technical faults, including recurring sensor errors, valve irregularities, and standard control system glitches."
+msgstr "Défauts techniques modérés, incluant des erreurs de capteurs récurrentes, des irrégularités de vannes et des bugs standards du système de contrôle."
+
+msgid "Minor service issues, including infrequent sensor misalignments and basic component adjustments during routine maintenance."
+msgstr "Problèmes de service mineurs, incluant des désalignements occasionnels de capteurs et des ajustements basiques de composants lors de la maintenance de routine."
+
+msgid "A singular anomaly, including a rare sensor or component error that deviates from the standard maintenance routine."
+msgstr "Une anomalie singulière, incluant une erreur rare de capteur ou de composant dérogeant à la routine de maintenance standard."
+
+msgid "Routine maintenance tasks, including regular inspections, lubrication, and sensor adjustments ensuring consistent equipment performance."
+msgstr "Tâches d’entretien de routine, incluant des inspections régulières, la lubrification et des ajustements de capteurs garantissant des performances constantes de l’équipement."
+
+msgid "Standard maintenance tasks, including routine sensor checks, calibrations, and component adjustments with predictable outcomes."
+msgstr "Tâches de maintenance standard, incluant des vérifications régulières de capteurs, des calibrations et des ajustements de composants avec des résultats prévisibles."
+
+msgid "Predominantly recurring issues, including regular sensor errors, control system glitches, and standard component recalibrations."
+msgstr "Problèmes majoritairement récurrents, incluant des erreurs fréquentes de capteurs, des bugs du système de contrôle et des recalibrages standards de composants."
+
+msgid "Less frequent service calls, including basic equipment inspections, sensor recalibrations, and minor component adjustments."
+msgstr "Interventions de service moins fréquentes, incluant des inspections basiques de l’équipement, des recalibrages de capteurs et des ajustements mineurs de composants."
