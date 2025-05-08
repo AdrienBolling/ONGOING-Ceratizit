@@ -79,7 +79,9 @@ if False:
     _("Minor service issues, including infrequent sensor misalignments and basic component adjustments during routine maintenance.")
     
 
-def _load_random_label():
+def _load_random_label(seed=None):
+    if seed is not None:
+        random.seed(seed)
     return random.choice(RANDOM_LABELS)
 
 
@@ -421,11 +423,14 @@ def label_compound_plotly_fig(fig, cluster_labels, label_coordinates, lang_loade
         if value[1] < 0:
             value[1] = random.randint(0, 50)
     new_traces = []
+    
+    num_clusters = len(cluster_labels)
+    
     for cluster in range(len(cluster_labels)):
         label = cluster_labels[str(cluster)]
         #if label == "None":
             #label = lang_loader(_load_random_label())
-        label = lang_loader(_load_random_label())
+        label = lang_loader(_load_random_label(seed=num_clusters))
         coordinates = label_coordinates[cluster]
         
         # Check the z_coord of the points already in the plot at this coordinate
@@ -464,11 +469,16 @@ def label_plotly_fig(fig, cluster_labels, label_coordinates):
         if value[1] < 0:
             value[1] = random.randint(0, 50)
     
+
+    # Get the number of clusters
+    num_clusters = len(cluster_labels)
+    
     for cluster in range(len(cluster_labels)):
         label = cluster_labels[str(cluster)]
         
         if label == "None":
-            label = _load_random_label()
+            label = _load_random_label(seed=num_clusters)
+            
         
         coordinates = label_coordinates[cluster]
         # Check if there is already a point at this coordinate
