@@ -120,7 +120,7 @@ if submitted or st.session_state["submitted"]:
             # Print the technician name
             col1, col2 = st.columns(2)
             col1.write(tech)
-            feedback[tech] = col2.feedback(options="thumbs")
+            feedback[tech] = col2.feedback(options="thumbs", key=tech)
             
         submitted_2 = st.form_submit_button(_("Submit"))
         

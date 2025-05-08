@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2025-04-30 12:01+0200\n"
+"POT-Creation-Date: 2025-05-08 14:22+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Generated-By: Babel 2.16.0\n"
 
 #: src/st_app/Knowledge_Grids.py:20 src/st_app/pages/Original_Data.py:21
-#: src/st_app/pages/Technician_Recommandation.py:27
+#: src/st_app/pages/Technician_Recommandation.py:34
 msgid "Choose language"
 msgstr ""
 
@@ -46,52 +46,65 @@ msgstr ""
 msgid "Useful Data"
 msgstr ""
 
-#: src/st_app/pages/Technician_Recommandation.py:40
+#: src/st_app/pages/Technician_Recommandation.py:47
 msgid "Technician Recommandation"
 msgstr ""
 
-#: src/st_app/pages/Technician_Recommandation.py:57
+#: src/st_app/pages/Technician_Recommandation.py:64
 msgid "Maintenance Ticket"
 msgstr ""
 
-#: src/st_app/pages/Technician_Recommandation.py:59
+#: src/st_app/pages/Technician_Recommandation.py:66
 msgid "Please fill in the following information:"
 msgstr ""
 
-#: src/st_app/pages/Technician_Recommandation.py:60
+#: src/st_app/pages/Technician_Recommandation.py:67
 msgid "Sector"
 msgstr ""
 
-#: src/st_app/pages/Technician_Recommandation.py:61
+#: src/st_app/pages/Technician_Recommandation.py:68
 msgid "Short Description (Notification Description)"
 msgstr ""
 
-#: src/st_app/pages/Technician_Recommandation.py:62
+#: src/st_app/pages/Technician_Recommandation.py:69
 msgid "Equipment Name"
 msgstr ""
 
-#: src/st_app/pages/Technician_Recommandation.py:63
+#: src/st_app/pages/Technician_Recommandation.py:70
 msgid "Long Description (Notification Text)"
 msgstr ""
 
-#: src/st_app/pages/Technician_Recommandation.py:66
+#: src/st_app/pages/Technician_Recommandation.py:73
+#: src/st_app/pages/Technician_Recommandation.py:125
 msgid "Submit"
 msgstr ""
 
-#: src/st_app/pages/Technician_Recommandation.py:69
+#: src/st_app/pages/Technician_Recommandation.py:78
 msgid "Ticket submitted successfully!"
 msgstr ""
 
-#: src/st_app/pages/Technician_Recommandation.py:72
+#: src/st_app/pages/Technician_Recommandation.py:81
 msgid "Please Wait..."
 msgstr ""
 
-#: src/st_app/pages/Technician_Recommandation.py:98
+#: src/st_app/pages/Technician_Recommandation.py:107
 msgid " and "
 msgstr ""
 
-#: src/st_app/pages/Technician_Recommandation.py:101
+#: src/st_app/pages/Technician_Recommandation.py:110
 msgid "We recommend you to assign this ticket to "
+msgstr ""
+
+#: src/st_app/pages/Technician_Recommandation.py:116
+msgid "Feedback"
+msgstr ""
+
+#: src/st_app/pages/Technician_Recommandation.py:117
+msgid "Please provide your feedback on the suggested technicians:"
+msgstr ""
+
+#: src/st_app/pages/Technician_Recommandation.py:128
+msgid "Thanks for the feedback"
 msgstr ""
 
 #: src/utils/grid_utils.py:62
